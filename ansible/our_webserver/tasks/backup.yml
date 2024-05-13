@@ -1,0 +1,9 @@
+- name: Schedule a Cron Job
+  ansible.builtin.cron:
+    name: "Backup script"
+    user: root
+    job: "tar cfP - /var/www/  | gzip --rsyncable > /opt/backup/backup-$(date --iso).tar.gz"
+    minute: "0"
+    hour: "2"
+    day: "*"
+    cron_file: backup

@@ -1,0 +1,23 @@
+- name: Create group
+  group:
+    name: www-data
+    state: present
+
+- name: Create User 
+  user:
+    name: www-data
+    groups: www-data
+    system: yes
+    home: /var/www
+    comment: "Web user"
+
+- name: create home directory
+  file:
+    path: "/var/www"
+    owner: www-data
+    group: www-data
+    mode: 0755
+    state: directory
+
+    
+    

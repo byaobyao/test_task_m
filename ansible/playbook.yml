@@ -1,0 +1,5 @@
+- name: Install web server
+  hosts: all
+  become: yes
+  roles:
+    - our_webserver

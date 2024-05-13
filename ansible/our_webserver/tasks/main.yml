@@ -1,0 +1,14 @@
+---
+# tasks file for our_webserver
+#
+#
+#####default system settings
+- include_tasks: default_user_settings.yml
+#####default user settings
+- include_tasks: default_user_settings.yml
+#####nginx
+- include_tasks: nginx.yml
+######python
+- include_tasks: python.yml
+#####backup
+- include_tasks: backup.yml  

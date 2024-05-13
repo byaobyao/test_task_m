@@ -1,0 +1,94 @@
+- name: install pip
+  package:
+    name: python-pip
+    state: latest
+
+- name: Pip install uvicorn
+  pip:
+    name: uvicorn
+    state: present
+
+- name: Pip install fastapi
+  pip:
+    name: fastapi
+    state: present   
+
+- name: Create myapp1 directory 
+  ansible.builtin.file:
+    path: /var/www/myapp1
+    state: directory
+    mode: '0755'    
+
+- name: Create myapp2 directory
+  ansible.builtin.file:    
+    path: /var/www/myapp2
+    state: directory
+    mode: '0755'
+
+- name: Copy app.py to myapp1
+  copy:
+    src: "{{ role_path }}/files/api.py"
+    dest: /var/www/myapp1/api.py
+    
+
+- name: Copy app.py to myapp2
+  copy:
+    src: "{{ role_path }}/files/api.py"
+    dest: /var/www/myapp2/api.py    
+
+- name: Creating a service file
+  become: yes
+  copy: 
+    dest: /etc/systemd/system/fastapp1.service
+    content: |
+      [Unit]
+      Description=WebServer on FastAPI
+      After=network.target
+
+      [Service]
+      User=www-data
+      Group=www-data
+      WorkingDirectory=/var/www/myapp1
+      ExecStart=/usr/local/bin/uvicorn api:app --host 127.0.0.1 --port 8080
+      Restart=always
+
+      [Install]
+      WantedBy=multi-user.target
+
+- name: Creating a service file
+  become: yes
+  copy: 
+    dest: /etc/systemd/system/fastapp2.service
+    content: |
+      [Unit]
+      Description=WebServer on FastAPI
+      After=network.target
+
+      [Service]
+      User=www-data
+      Group=www-data
+      WorkingDirectory=/var/www/myapp2
+      ExecStart=/usr/local/bin/uvicorn api:app --host 127.0.0.1 --port 8081
+      Restart=always
+
+      [Install]
+      WantedBy=multi-user.target
+
+
+- name: Reload the SystemD to re-read configurations
+  become: yes
+  systemd:
+    daemon-reload: yes
+- name: Enable the fastapp1 service 
+  become: yes
+  systemd:
+    name: fastapp1
+    enabled: yes
+    state: started    
+
+- name: Enable the fastapp2 service 
+  become: yes
+  systemd:
+    name: fastapp2
+    enabled: yes
+    state: started

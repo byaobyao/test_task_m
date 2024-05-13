@@ -1,0 +1,5 @@
+- name: server-v.example.com
+  port: 8090
+
+- name: server-w.example.com
+  port: 8091  
