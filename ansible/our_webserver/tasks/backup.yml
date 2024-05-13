@@ -1,3 +1,11 @@
+- name: create backup directory
+  file:
+    path: "/opt/backup"
+    owner: root
+    group: root
+    mode: 0755
+    state: directory
+
 - name: Schedule a Cron Job
   ansible.builtin.cron:
     name: "Backup script"
